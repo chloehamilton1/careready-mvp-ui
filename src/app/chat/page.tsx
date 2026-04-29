@@ -53,12 +53,12 @@ export default function ChatPage() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          question: currentInput,
-          role: "CNA",
-          agency_id: "test",
-          state: "NH",
-          history: messages.slice(-6)
-        })
+  question: currentInput,
+  role: "CNA",
+  agency_id: "test",
+  state: "NH",
+  history: messages.slice(-6)
+})
       });
 
       if (!res.ok) {
@@ -71,11 +71,11 @@ export default function ChatPage() {
         role: "assistant",
         text: `${data.response_text}
 
-Escalation: ${data.escalation_level}
-Policy: ${data.policy_reference
-  .replace(".docx", "")
-  .replace(/_/g, " ")}
-Confidence: ${data.confidence}`
+        Escalation: ${data.escalation_level}
+        Policy: ${data.policy_reference
+          .replace(".docx", "")
+          .replace(/_/g, " ")}
+        Confidence: ${data.confidence}`
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
