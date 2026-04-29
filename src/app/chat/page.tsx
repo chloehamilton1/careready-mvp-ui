@@ -74,7 +74,8 @@ export default function ChatPage() {
         Escalation: ${data.escalation_level}
         Policy: ${data.policy_reference
           .replace(".docx", "")
-          .replace(/_/g, " ")}
+          .replace(/_/g, " ")
+          .replace(/^\d+ /, "")}
         Confidence: ${data.confidence}`
       };
 
