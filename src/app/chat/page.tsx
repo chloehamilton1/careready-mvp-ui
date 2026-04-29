@@ -45,7 +45,9 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("https://care-ready-backend.onrender.com/query", {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/query`,
+        {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -54,7 +56,8 @@ export default function ChatPage() {
           question: currentInput,
           role: "CNA",
           agency_id: "test",
-          state: "NH"
+          state: "NH",
+          history: messages.slice(-6)
         })
       });
 
