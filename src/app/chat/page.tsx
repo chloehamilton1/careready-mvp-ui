@@ -72,7 +72,9 @@ export default function ChatPage() {
         text: `${data.response_text}
 
 Escalation: ${data.escalation_level}
-Policy: ${data.policy_reference}
+Policy: ${data.policy_reference
+  .replace(".docx", "")
+  .replace(/_/g, " ")}
 Confidence: ${data.confidence}`
       };
 
