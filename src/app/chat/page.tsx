@@ -48,18 +48,19 @@ export default function ChatPage() {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/query`,
         {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-  question: currentInput,
-  role: "CNA",
-  agency_id: "test",
-  state: "NH",
-  history: messages.slice(-6)
-})
-      });
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            question: currentInput,
+            role: "CNA",
+            agency_id: "test",
+            state: "NH",
+            history: messages.slice(-6)
+          })
+        }
+      );
 
       if (!res.ok) {
         throw new Error(`Backend error: ${res.status}`);
@@ -71,12 +72,12 @@ export default function ChatPage() {
         role: "assistant",
         text: `${data.response_text}
 
-        Escalation: ${data.escalation_level}
-        Policy: ${data.policy_reference
+Escalation: ${data.escalation_level}
+Policy: ${data.policy_reference
           .replace(".docx", "")
           .replace(/_/g, " ")
           .replace(/^\d+ /, "")}
-        Confidence: ${data.confidence}`
+Confidence: ${data.confidence}`
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -91,6 +92,25 @@ export default function ChatPage() {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const sendFeedback = async (rating: "up" | "down", responseText: string) => {
+    console.log(`thumbs_${rating}`, responseText);
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/feedback`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          rating,
+          response: responseText
+        })
+      });
+    } catch (error) {
+      console.error("Feedback failed:", error);
     }
   };
 
@@ -129,37 +149,38 @@ export default function ChatPage() {
 
       <section className="card space-y-3">
         {messages.map((message, index) => (
-  <div key={`${message.role}-${index}`} className="space-y-2">
-    <article
-      className={`max-w-[92%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-        message.role === "caregiver"
-          ? "ml-auto bg-careBlue-600 text-white"
-          : "mr-auto border border-careGreen-200 bg-careGreen-50 text-careGreen-900"
-      }`}
-    >
-      {message.text}
-    </article>
+          <div key={`${message.role}-${index}`} className="space-y-2">
+            <article
+              className={`max-w-[92%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                message.role === "caregiver"
+                  ? "ml-auto bg-careBlue-600 text-white"
+                  : "mr-auto border border-careGreen-200 bg-careGreen-50 text-careGreen-900"
+              }`}
+            >
+              {message.text}
+            </article>
 
-    {message.role === "assistant" && index !== 0 && (
-      <div className="ml-2 flex gap-2 text-sm">
-        <button
-          type="button"
-          className="rounded-full border px-3 py-1 hover:bg-slate-100"
-          onClick={() => console.log("thumbs_up", message.text)}
-        >
-          👍
-        </button>
-        <button
-          type="button"
-          className="rounded-full border px-3 py-1 hover:bg-slate-100"
-          onClick={() => console.log("thumbs_down", message.text)}
-        >
-          👎
-        </button>
-      </div>
-    )}
-  </div>
-))}
+            {message.role === "assistant" && index !== 0 && (
+              <div className="ml-2 flex gap-2 text-sm">
+                <button
+                  type="button"
+                  className="rounded-full border px-3 py-1 hover:bg-slate-100"
+                  onClick={() => sendFeedback("up", message.text)}
+                >
+                  👍
+                </button>
+
+                <button
+                  type="button"
+                  className="rounded-full border px-3 py-1 hover:bg-slate-100"
+                  onClick={() => sendFeedback("down", message.text)}
+                >
+                  👎
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
 
         {isLoading && (
           <article className="mr-auto max-w-[92%] rounded-2xl border border-careGreen-200 bg-careGreen-50 px-4 py-3 text-sm leading-relaxed text-careGreen-900">
