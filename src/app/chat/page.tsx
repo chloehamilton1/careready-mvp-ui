@@ -157,7 +157,11 @@ Confidence: ${data.confidence}`
                   : "mr-auto border border-careGreen-200 bg-careGreen-50 text-careGreen-900"
               }`}
             >
-              {message.text}
+              <div className="space-y-1">
+  {message.text.split("\n").map((line, i) => (
+    <p key={i}>{line}</p>
+  ))}
+</div>
             </article>
 
             {message.role === "assistant" && index !== 0 && (
