@@ -30,6 +30,11 @@ export default function ChatPage() {
   const [feedbackGiven, setFeedbackGiven] = useState<{
     [key: number]: "up" | "down";
   }>({});
+  
+  const user =
+  typeof window !== "undefined"
+    ? JSON.parse(localStorage.getItem("careUser") || "{}")
+    : {};
 
   const handleQuickPrompt = (prompt: string) => {
     setInput(prompt);
@@ -139,8 +144,9 @@ Confidence: ${data.confidence}`
   return (
     <ShellLayout
       title="Caregiver Chat"
-      subtitle="Get grounded, role-aware support in seconds."
+      subtitle={`Get grounded, role-aware support in seconds. Signed in as ${user.role || "Caregiver"} | ${user.agency || "Agency"}`}
     >
+      
       <DisclaimerCard
         title="Non-clinical support only"
         content="CareReady provides non-clinical support only. It does not provide medical advice, clinical diagnosis, or treatment guidance. For any medical question, always contact a qualified medical professional or your supervisor."
