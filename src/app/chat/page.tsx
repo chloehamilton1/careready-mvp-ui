@@ -59,9 +59,9 @@ export default function ChatPage() {
           },
           body: JSON.stringify({
             question: currentInput,
-            role: "CNA",
-            agency_id: "test",
-            state: "NH",
+            role: JSON.parse(localStorage.getItem("careUser") || "{}").role || "CNA",
+            agency_id: JSON.parse(localStorage.getItem("careUser") || "{}").agency || "test",
+            state: JSON.parse(localStorage.getItem("careUser") || "{}").state || "NH",
             history: messages.slice(-6)
           })
         }
