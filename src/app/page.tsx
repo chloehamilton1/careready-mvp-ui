@@ -1,8 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ShellLayout from "@/components/ShellLayout";
 import DisclaimerCard from "@/components/DisclaimerCard";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+
+  const handleLogin = () => {
+    if (!email) {
+      alert("Please enter your email");
+      return;
+    }
+
+    localStorage.setItem("careUser", JSON.stringify({ email }));
+    router.push("/chat");
+  };
+
   return (
     <ShellLayout
       title="Login"
@@ -18,7 +35,13 @@ export default function LoginPage() {
             <label className="mb-1 block text-xs font-medium text-slate-600">
               Work Email
             </label>
-            <input className="input" type="email" placeholder="you@agency.com" />
+            <input
+              className="input"
+              type="email"
+              placeholder="you@agency.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-slate-600">
@@ -26,7 +49,7 @@ export default function LoginPage() {
             </label>
             <input className="input" type="password" placeholder="Enter password" />
           </div>
-          <button type="button" className="btn-primary">
+          <button type="button" className="btn-primary" onClick={handleLogin}>
             Sign in
           </button>
         </form>
