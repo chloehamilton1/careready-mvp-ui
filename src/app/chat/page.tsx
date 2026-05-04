@@ -26,6 +26,11 @@ export default function ChatPage() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // NEW: track feedback
+  const [feedbackGiven, setFeedbackGiven] = useState<{
+    [key: number]: "up" | "down";
+  }>({});
+
   const handleQuickPrompt = (prompt: string) => {
     setInput(prompt);
   };
@@ -95,8 +100,18 @@ Confidence: ${data.confidence}`
     }
   };
 
-  const sendFeedback = async (rating: "up" | "down", responseText: string) => {
+  // UPDATED: feedback with index + color state
+  const sendFeedback = async (
+    rating: "up" | "down",
+    responseText: string,
+    index: number
+  ) => {
     console.log(`thumbs_${rating}`, responseText);
+
+    setFeedbackGiven((prev) => ({
+      ...prev,
+      [index]: rating
+    }));
 
     try {
       await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/feedback`, {
@@ -151,33 +166,43 @@ Confidence: ${data.confidence}`
         {messages.map((message, index) => (
           <div key={`${message.role}-${index}`} className="space-y-2">
             <article
-              className={`max-w-[92%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                 message.role === "caregiver"
                   ? "ml-auto bg-careBlue-600 text-white"
                   : "mr-auto border border-careGreen-200 bg-careGreen-50 text-careGreen-900"
               }`}
             >
-              <div className="space-y-1">
-  {message.text.split("\n").map((line, i) => (
-    <p key={i}>{line}</p>
-  ))}
-</div>
+              <div className="space-y-2">
+                {message.text.split("\n").map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
             </article>
 
             {message.role === "assistant" && index !== 0 && (
               <div className="ml-2 flex gap-2 text-sm">
                 <button
                   type="button"
-                  className="rounded-full border px-3 py-1 hover:bg-slate-100"
-                  onClick={() => sendFeedback("up", message.text)}
+                  className={`rounded-full border px-3 py-1 ${
+                    feedbackGiven[index] === "up"
+                      ? "bg-careBlue-600 text-white"
+                      : "hover:bg-slate-100"
+                  }`}
+                  disabled={!!feedbackGiven[index]}
+                  onClick={() => sendFeedback("up", message.text, index)}
                 >
                   👍
                 </button>
 
                 <button
                   type="button"
-                  className="rounded-full border px-3 py-1 hover:bg-slate-100"
-                  onClick={() => sendFeedback("down", message.text)}
+                  className={`rounded-full border px-3 py-1 ${
+                    feedbackGiven[index] === "down"
+                      ? "bg-careBlue-600 text-white"
+                      : "hover:bg-slate-100"
+                  }`}
+                  disabled={!!feedbackGiven[index]}
+                  onClick={() => sendFeedback("down", message.text, index)}
                 >
                   👎
                 </button>
