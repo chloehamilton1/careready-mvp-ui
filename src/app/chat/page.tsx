@@ -25,6 +25,7 @@ export default function ChatPage() {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   // NEW: track feedback
   const [feedbackGiven, setFeedbackGiven] = useState<{
@@ -38,6 +39,40 @@ export default function ChatPage() {
 
   const handleQuickPrompt = (prompt: string) => {
     setInput(prompt);
+  };
+
+  const handleVoiceInput = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Voice input is not supported in this browser. Please use Chrome.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    setIsListening(true);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      alert("Voice input failed. Please try again.");
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
   };
 
   const handleSend = async () => {
@@ -228,14 +263,23 @@ Confidence: ${data.confidence}`
         <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">
           Ask your question
         </label>
-        <input
-          className="input"
-          placeholder="PHI warning: Do not include names, DOB, address, diagnosis, or any identifiable patient details."
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
+        <div className="flex gap-2">
+          <input
+            className="input"
+            placeholder="PHI warning: Do not include names, DOB, address, diagnosis, or any identifiable patient details."
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            type="button"
+            className="rounded-xl border border-careBlue-200 px-4 text-careBlue-700 hover:bg-careBlue-50"
+            onClick={handleVoiceInput}
+          >
+            {isListening ? "Listening..." : "Mic"}
+          </button>
+        </div>
         <button
           type="button"
           className="btn-primary mt-3"
