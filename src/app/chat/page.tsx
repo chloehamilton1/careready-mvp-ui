@@ -42,33 +42,35 @@ export default function ChatPage() {
   };
 
   const handleVoiceInput = () => {
-    type SpeechRecognitionConstructor = new () => {
-      lang: string;
-      interimResults: boolean;
-      maxAlternatives: number;
-      onresult: (event: any) => void;
-      onerror: () => void;
-      onend: () => void;
-      start: () => void;
-    };    type SpeechRecognitionEvent = {
+    type VoiceRecognitionEvent = {
       results: {
-        [key: number]: {
-          [key: number]: {
+        0: {
+          0: {
             transcript: string;
           };
         };
       };
     };
   
+    type SpeechRecognitionInstance = {
+      lang: string;
+      interimResults: boolean;
+      maxAlternatives: number;
+      onresult: (event: VoiceRecognitionEvent) => void;
+      onerror: () => void;
+      onend: () => void;
+      start: () => void;
+    };
+  
+    type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+  
+    const speechWindow = window as Window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+  
     const SpeechRecognition =
-      (window as Window & {
-        SpeechRecognition?: SpeechRecognitionConstructor;
-        webkitSpeechRecognition?: SpeechRecognitionConstructor;
-      }).SpeechRecognition ||
-      (window as Window & {
-        SpeechRecognition?: SpeechRecognitionConstructor;
-        webkitSpeechRecognition?: SpeechRecognitionConstructor;
-      }).webkitSpeechRecognition;
+      speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
   
     if (!SpeechRecognition) {
       alert("Voice input is not supported in this browser. Please use Chrome.");
@@ -82,7 +84,7 @@ export default function ChatPage() {
   
     setIsListening(true);
   
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: VoiceRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
       setIsListening(false);
