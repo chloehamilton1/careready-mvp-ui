@@ -42,36 +42,61 @@ export default function ChatPage() {
   };
 
   const handleVoiceInput = () => {
+    type SpeechRecognitionConstructor = new () => {
+      lang: string;
+      interimResults: boolean;
+      maxAlternatives: number;
+      onresult: (event: any) => void;
+      onerror: () => void;
+      onend: () => void;
+      start: () => void;
+    };    type SpeechRecognitionEvent = {
+      results: {
+        [key: number]: {
+          [key: number]: {
+            transcript: string;
+          };
+        };
+      };
+    };
+  
     const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
+      (window as Window & {
+        SpeechRecognition?: SpeechRecognitionConstructor;
+        webkitSpeechRecognition?: SpeechRecognitionConstructor;
+      }).SpeechRecognition ||
+      (window as Window & {
+        SpeechRecognition?: SpeechRecognitionConstructor;
+        webkitSpeechRecognition?: SpeechRecognitionConstructor;
+      }).webkitSpeechRecognition;
+  
     if (!SpeechRecognition) {
       alert("Voice input is not supported in this browser. Please use Chrome.");
       return;
     }
-
+  
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
+  
     setIsListening(true);
-
-    recognition.onresult = (event: any) => {
+  
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
       setIsListening(false);
     };
-
+  
     recognition.onerror = () => {
       setIsListening(false);
       alert("Voice input failed. Please try again.");
     };
-
+  
     recognition.onend = () => {
       setIsListening(false);
     };
-
+  
     recognition.start();
   };
 
