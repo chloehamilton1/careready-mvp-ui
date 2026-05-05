@@ -26,17 +26,25 @@ export default function AdminDashboardPage() {
         content="Admins can view usage metrics and question type trends, but cannot view individual caregiver conversations."
       />
 
+      {/* Stats */}
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {stats.map((stat) => (
           <article key={stat.label} className="card">
-            <p className="text-xs uppercase tracking-wide text-slate-500">{stat.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-careBlue-800">{stat.value}</p>
+            <p className="text-xs uppercase tracking-wide text-slate-500">
+              {stat.label}
+            </p>
+            <p className="mt-2 text-2xl font-semibold text-careBlue-800">
+              {stat.value}
+            </p>
           </article>
         ))}
       </section>
 
+      {/* Breakdown */}
       <section className="card">
-        <h2 className="text-sm font-semibold text-slate-700">Question type breakdown</h2>
+        <h2 className="text-sm font-semibold text-slate-700">
+          Question type breakdown
+        </h2>
         <div className="mt-4 space-y-3">
           {breakdown.map((item) => (
             <div key={item.category}>
@@ -55,8 +63,11 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
+      {/* Usage Trend */}
       <section className="card">
-        <h2 className="text-sm font-semibold text-slate-700">Usage trend (sample)</h2>
+        <h2 className="text-sm font-semibold text-slate-700">
+          Usage trend (sample)
+        </h2>
         <div className="mt-3 grid grid-cols-7 gap-1">
           {[12, 18, 15, 27, 21, 33, 26].map((value, index) => (
             <div key={`${value}-${index}`} className="flex flex-col items-center">
@@ -64,9 +75,47 @@ export default function AdminDashboardPage() {
                 className="w-full rounded-t bg-careBlue-400"
                 style={{ height: `${value * 2}px` }}
               />
-              <span className="mt-1 text-[10px] text-slate-500">D{index + 1}</span>
+              <span className="mt-1 text-[10px] text-slate-500">
+                D{index + 1}
+              </span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* NEW: Recent Activity Table */}
+      <section className="card">
+        <h2 className="text-sm font-semibold text-slate-700">
+          Recent activity
+        </h2>
+
+        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-600">
+              <tr>
+                <th className="px-3 py-2 font-medium">Time</th>
+                <th className="px-3 py-2 font-medium">Role</th>
+                <th className="px-3 py-2 font-medium">Agency</th>
+                <th className="px-3 py-2 font-medium">Question type</th>
+                <th className="px-3 py-2 font-medium">Feedback</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              {[
+                ["9:12 AM", "CNA", "NH-HOME-01", "Meal refusal", "👍"],
+                ["9:34 AM", "HHA", "NH-HOME-01", "Unsafe home condition", "👍"],
+                ["10:05 AM", "LNA", "NH-HOME-02", "Policy escalation", "👎"]
+              ].map((row, index) => (
+                <tr key={index}>
+                  {row.map((cell) => (
+                    <td key={cell} className="px-3 py-2">
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
     </ShellLayout>
