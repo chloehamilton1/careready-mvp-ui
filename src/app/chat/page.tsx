@@ -303,9 +303,12 @@ Confidence: ${data.confidence}`
             className="rounded-xl border border-careBlue-200 px-4 text-careBlue-700 hover:bg-careBlue-50"
             onClick={handleVoiceInput}
           >
-            {isListening ? "Listening..." : "Mic"}
+            {isListening ? "Listening..." : "Start voice"}
           </button>
         </div>
+        <p className="mt-1 text-xs text-slate-500">
+          Tap Start voice, speak, then pause to auto-fill.
+        </p>
         <button
           type="button"
           className="btn-primary mt-3"
