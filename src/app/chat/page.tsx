@@ -79,7 +79,7 @@ export default function ChatPage() {
   
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.maxAlternatives = 1;
   
     setIsListening(true);
@@ -87,7 +87,6 @@ export default function ChatPage() {
     recognition.onresult = (event: VoiceRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
-      setIsListening(false);
     };
   
     recognition.onerror = () => {
