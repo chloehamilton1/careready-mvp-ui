@@ -63,7 +63,7 @@ export default function LoginPage() {
 
       <DisclaimerCard
         title="Non-clinical scope"
-        content="CareReady provides non-clinical support only. It does not provide medical advice, clinical diagnosis, or treatment guidance. For any medical question, always contact a qualified medical professional or your supervisor."
+        content="Matriva provides non-clinical support only. It does not provide medical advice, clinical diagnosis, or treatment guidance. For any medical question, always contact a qualified medical professional or your supervisor."
       />
       <DisclaimerCard
         title="PHI / Privacy"

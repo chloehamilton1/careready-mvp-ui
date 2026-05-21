@@ -1,4 +1,4 @@
-# CareReady MVP UI
+# Matriva MVP UI
 
 Mobile-first Next.js + Tailwind CSS MVP interface for:
 
