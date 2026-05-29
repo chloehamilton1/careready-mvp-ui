@@ -4,11 +4,47 @@ import { useState } from "react";
 import ShellLayout from "@/components/ShellLayout";
 import DisclaimerCard from "@/components/DisclaimerCard";
 
-const quickPrompts = [
-  "Client refuses scheduled meal support. What should I do?",
-  "Unsafe home condition discovered during shift.",
-  "Transportation option for non-emergency appointment.",
-  "How do I escalate a policy concern to supervisor?"
+const promptCategories = [
+  {
+    title: "Care situations",
+    description:
+      "Meal refusal, confusion, hygiene support, or difficult shift moments.",
+    prompts: [
+      "Client refuses scheduled meal support. What should I do?",
+      "Client is confused or agitated during my shift.",
+      "Client will not accept help with hygiene."
+    ]
+  },
+  {
+    title: "Safety & escalation",
+    description:
+      "Unsafe home conditions, fall risk concerns, and supervisor escalation.",
+    prompts: [
+      "Unsafe home condition discovered during shift.",
+      "When should I call my supervisor?",
+      "Client may be at risk of falling."
+    ]
+  },
+  {
+    title: "Agency policy",
+    description:
+      "Documentation, missed visits, unclear care instructions, and policy questions.",
+    prompts: [
+      "How do I escalate a policy concern to supervisor?",
+      "How should I document a missed visit?",
+      "What should I do if care instructions are unclear?"
+    ]
+  },
+  {
+    title: "Logistics & resources",
+    description:
+      "Transportation, appointments, family requests, and community resources.",
+    prompts: [
+      "Transportation option for non-emergency appointment.",
+      "Client needs help finding a community resource.",
+      "Family asks for support outside my role."
+    ]
+  }
 ];
 
 type ChatMessage = {
@@ -21,7 +57,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      text: "Hi — ask me a caregiver support question and I’ll return grounded, role-aware guidance."
+      text: "Hi — I can help with care situations, safety escalation, agency policy, and non-clinical resources. Ask a question or choose a category below."
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -213,10 +249,31 @@ Confidence: ${data.confidence}`
         content="Matriva provides non-clinical support only. It does not provide medical advice, clinical diagnosis, or treatment guidance. For any medical question, always contact a qualified medical professional or your supervisor."
       />
 
-      <section className="card">
-        <h2 className="text-sm font-semibold text-slate-700">Quick prompt starters</h2>
+<section className="card">
+  <h2 className="text-sm font-semibold text-slate-700">
+    What you can ask about
+  </h2>
+
+  <p className="mt-1 text-xs text-slate-500">
+    Choose a category below or ask your own non-clinical caregiver support question.
+  </p>
+
+  <div className="mt-4 grid gap-4 md:grid-cols-2">
+    {promptCategories.map((category) => (
+      <div
+        key={category.title}
+        className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+      >
+        <h3 className="text-sm font-semibold text-careBlue-800">
+          {category.title}
+        </h3>
+
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          {category.description}
+        </p>
+
         <div className="mt-3 flex flex-wrap gap-2">
-          {quickPrompts.map((prompt) => (
+          {category.prompts.map((prompt) => (
             <button
               key={prompt}
               type="button"
@@ -227,7 +284,10 @@ Confidence: ${data.confidence}`
             </button>
           ))}
         </div>
-      </section>
+      </div>
+    ))}
+  </div>
+</section>
 
       <section className="card space-y-3">
         {messages.map((message, index) => (
