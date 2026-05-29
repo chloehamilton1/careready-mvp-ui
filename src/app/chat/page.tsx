@@ -26,7 +26,7 @@ const promptCategories = [
     ]
   },
   {
-    title: "Agency policy",
+    title: "Agency policy & Documentation",
     description:
       "Documentation, missed visits, unclear care instructions, and policy questions.",
     prompts: [
